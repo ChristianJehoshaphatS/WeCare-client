@@ -5,7 +5,6 @@ import logo from "../assets/wecarelogo.png";
 const navigation = [
 	{name: "Home", href: "#", current: true},
 	{name: "Chat Groups", href: "#", current: false},
-	{name: "About", href: "#", current: false},
 ];
 
 function classNames(...classes) {
@@ -14,7 +13,7 @@ function classNames(...classes) {
 
 export default function NavBar() {
 	return (
-		<Disclosure as="nav" className="bg-[#2596be]">
+		<Disclosure as="nav" className="bg-[#2596be] w-full fixed top-0 z-50">
 			{({open}) => (
 				<>
 					<div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
