@@ -122,6 +122,7 @@ const HomePage = () => {
 			);
 
 			localStorage.setItem("firstTime", false);
+			setCheck([]);
 		} catch (error) {
 			console.log(error);
 		}
