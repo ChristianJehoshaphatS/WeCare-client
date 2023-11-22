@@ -1,12 +1,30 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
+
+import {useSelector, useDispatch} from "react-redux";
+import {
+	openModal,
+	closeModal,
+	addCheck,
+	removeCheck,
+	setGroups,
+} from "../features/homeGroups/homeSlice";
+
 const HomePage = () => {
-	const [openModal, setOpenModal] = useState(false);
-	useEffect(() => {
+	const dispatch = useDispatch();
+	const Modal = useSelector((state) => state.home.openModal);
+	const check = useSelector((state) => state.home.check);
+	const joinedGroup = useSelector((state) => state.home.groups);
+	console.log(Modal);
+	// const [openModal, setOpenModal] = useState(false);
+	const open = () => {
 		const first = localStorage.getItem("firstTime");
 		if (first === "true") {
-			setOpenModal(true);
+			dispatch(openModal());
 		}
+	};
+	useEffect(() => {
+		open();
 		const fetchGroups = async () => {
 			const {data} = await axios.get("http://localhost:3000/usergroup", {
 				headers: {
@@ -19,32 +37,12 @@ const HomePage = () => {
 				console.log(el.Group.title);
 				group.push(el.Group.title);
 			});
-			setJoinedGroup({
-				...joinedGroup,
-				[group[0]]: true,
-				[group[1]]: true,
-				[group[2]]: true,
-				[group[3]]: true,
-				[group[4]]: true,
-				[group[5]]: true,
-				[group[6]]: true,
-				[group[7]]: true,
-			});
+			dispatch(setGroups(group));
 		};
 		fetchGroups();
 	}, []);
 
-	const [check, setCheck] = useState([]);
-	const [joinedGroup, setJoinedGroup] = useState({
-		Depression: false,
-		"Anxiety Disorders": false,
-		Schizophrenia: false,
-		"Bipolar Disorder": false,
-		"Diabetes Mellitus": false,
-		Hypertension: false,
-		Osteoarthritis: false,
-		Asthma: false,
-	});
+	const [check2, setCheck] = useState([]);
 
 	const checkboxes = [
 		{
@@ -82,19 +80,16 @@ const HomePage = () => {
 	];
 
 	const editCheck = (event) => {
-		let checkValue;
-		let checked;
-		if (event) {
-			checked = event?.target?.checked;
-			checkValue = event?.target?.attributes?.id?.value;
-		}
-
-		console.log(check);
-		if (!checked) {
-			let newFilter = check.filter((el) => el.id != checkValue);
-			setCheck(newFilter);
+		console.log(event);
+		if (event?.target?.checked == true) {
+			dispatch(
+				addCheck({
+					id: event?.target?.attributes?.id?.value,
+					title: event?.target?.name,
+				})
+			);
 		} else {
-			setCheck([...check, {id: event.target.id, title: event.target.name}]);
+			dispatch(removeCheck(event?.target?.attributes?.id?.value));
 		}
 	};
 
@@ -132,7 +127,7 @@ const HomePage = () => {
 			<main className="py-6 px-4 sm:p-6 md:py-10 md:px-8 bg-slate-100 min-h-[100dvh]">
 				<dialog
 					id="my_modal_4"
-					className={openModal ? "modal modal-open" : "modal"}
+					className={Modal ? "modal modal-open" : "modal"}
 				>
 					<div className="modal-box w-11/12 max-w-5xl">
 						<h3 className="font-bold text-lg">
@@ -167,7 +162,7 @@ const HomePage = () => {
 									className="btn"
 									onClick={() => {
 										handleSubmit();
-										setOpenModal(false);
+										dispatch(closeModal());
 									}}
 								>
 									Submit
