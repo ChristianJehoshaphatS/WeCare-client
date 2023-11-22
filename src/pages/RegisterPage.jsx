@@ -1,8 +1,11 @@
 import logo from "../assets/wecare.png";
 import {useState} from "react";
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 const RegisterPage = () => {
+	const navigate = useNavigate();
+
 	const [registerInput, setRegisterInput] = useState({
 		username: "",
 		password: "",
@@ -19,6 +22,7 @@ const RegisterPage = () => {
 			registerInput
 		);
 		console.log(data);
+		navigate("/login");
 	};
 	return (
 		<div className="flex min-h-[100dvh] flex-1 flex-col justify-center px-6 py-12 lg:px-8 bg-slate-100">

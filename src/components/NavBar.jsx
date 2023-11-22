@@ -67,7 +67,9 @@ export default function NavBar() {
 								</div>
 							</div>
 							<div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-								<p className="text-slate-50">Jake McGillan</p>
+								<p className="text-slate-50">
+									{localStorage.getItem("username")}
+								</p>
 
 								{/* Profile dropdown */}
 								<Menu as="div" className="relative ml-3">
