@@ -3,8 +3,8 @@ import {Disclosure, Menu, Transition} from "@headlessui/react";
 import logo from "../assets/wecarelogo.png";
 
 const navigation = [
-	{name: "Home", href: "#", current: true},
-	{name: "Chat Groups", href: "#", current: false},
+	{name: "Home", href: "/home", current: false},
+	{name: "Chat Groups", href: "/chat", current: false},
 ];
 
 function classNames(...classes) {
@@ -121,7 +121,10 @@ export default function NavBar() {
 											<Menu.Item>
 												{({active}) => (
 													<a
-														href="#"
+														href="/login"
+														onClick={() => {
+															localStorage.clear();
+														}}
 														className={classNames(
 															active ? "bg-gray-100" : "",
 															"block px-4 py-2 text-sm text-gray-700"

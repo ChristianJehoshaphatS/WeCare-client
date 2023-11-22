@@ -1,4 +1,4 @@
-import {createBrowserRouter} from "react-router-dom";
+import {createBrowserRouter, redirect} from "react-router-dom";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import ParentPage from "../pages/ParentPage";
@@ -10,6 +10,12 @@ const router = createBrowserRouter([
 	{
 		path: "/login",
 		element: <LoginPage />,
+		loader: () => {
+			if (localStorage.getItem("access_token")) {
+				return redirect("/home");
+			}
+			return null;
+		},
 	},
 	{
 		path: "/register",
@@ -27,10 +33,16 @@ const router = createBrowserRouter([
 				element: <HomePage />,
 			},
 			{
-				path: "/chat/:groupId",
+				path: "/chat",
 				element: <ChatPage />,
 			},
 		],
+		loader: () => {
+			if (!localStorage.getItem("access_token")) {
+				return redirect("/login");
+			}
+			return null;
+		},
 	},
 ]);
 

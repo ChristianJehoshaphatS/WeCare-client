@@ -1,5 +1,30 @@
+import axios from "axios";
 import logo from "../assets/wecare.png";
+import {useState} from "react";
+import {useNavigate} from "react-router-dom";
 const LoginPage = () => {
+	const navigate = useNavigate();
+	const [loginInput, setLogininput] = useState({
+		username: "",
+		password: "",
+	});
+
+	const handleChange = (e) => [
+		setLogininput({...loginInput, [e.target.name]: e.target.value}),
+	];
+
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		const {data} = await axios.post(
+			"http://localhost:3000/loginToPostgres",
+			loginInput
+		);
+		console.log(data);
+		localStorage.setItem("access_token", data.access_token);
+		localStorage.setItem("username", data.username);
+		localStorage.setItem("firstTime", data.firstTime);
+		navigate("/home");
+	};
 	return (
 		<>
 			<div className="flex min-h-[100dvh] flex-1 flex-col justify-center px-6 py-12 lg:px-8 bg-slate-100">
@@ -15,7 +40,7 @@ const LoginPage = () => {
 				</div>
 
 				<div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-					<form className="space-y-6" action="#" method="POST">
+					<form className="space-y-6" onSubmit={handleSubmit}>
 						<div>
 							<label
 								htmlFor="username"
@@ -29,6 +54,8 @@ const LoginPage = () => {
 									name="username"
 									type="text"
 									autoComplete="name"
+									value={loginInput.username}
+									onChange={handleChange}
 									required
 									className="block h-12 w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#2596be] sm:text-sm sm:leading-6 bg-slate-300"
 								/>
@@ -57,6 +84,8 @@ const LoginPage = () => {
 									id="password"
 									name="password"
 									type="password"
+									onChange={handleChange}
+									value={loginInput.password}
 									autoComplete="current-password"
 									required
 									className="block h-12 px-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#2596be] sm:text-sm sm:leading-6 bg-slate-300"

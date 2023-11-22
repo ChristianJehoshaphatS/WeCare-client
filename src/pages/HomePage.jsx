@@ -1,38 +1,176 @@
+import {useEffect, useState} from "react";
+import axios from "axios";
 const HomePage = () => {
+	const [openModal, setOpenModal] = useState(false);
+	useEffect(() => {
+		const first = localStorage.getItem("firstTime");
+		if (first === "true") {
+			setOpenModal(true);
+		}
+	}, []);
+
+	const [check, setCheck] = useState([]);
+
+	const checkboxes = [
+		{
+			id: 214844,
+			name: "Depression",
+		},
+		{
+			id: 214845,
+			name: "Anxiety Disorder",
+		},
+		{
+			id: 214846,
+			name: "Schizophrenia",
+		},
+		{
+			id: 214847,
+			name: "Bipolar Disorder",
+		},
+		{
+			id: 214848,
+			name: "Diabetes",
+		},
+		{
+			id: 214849,
+			name: "Hypertension",
+		},
+		{
+			id: 214850,
+			name: "Osteoarthritis",
+		},
+		{
+			id: 214851,
+			name: "Asthma",
+		},
+	];
+
+	const editCheck = (event) => {
+		let checkValue;
+		let checked;
+		if (event) {
+			checked = event?.target?.checked;
+			checkValue = event?.target?.attributes?.id?.value;
+		}
+
+		console.log(check);
+		if (!checked) {
+			let newFilter = check.filter((el) => el.id != checkValue);
+			setCheck(newFilter);
+		} else {
+			setCheck([...check, {id: event.target.id, title: event.target.name}]);
+		}
+	};
+
+	const handleSubmit = async () => {
+		try {
+			const {data} = await axios.post(
+				"http://localhost:3000/usergroup",
+				check,
+				{
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+					},
+				}
+			);
+			console.log(data);
+
+			await axios.patch(
+				"http://localhost:3000/user",
+				{},
+				{
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+					},
+				}
+			);
+
+			localStorage.setItem("firstTime", false);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return (
 		<>
-			<main class="py-6 px-4 sm:p-6 md:py-10 md:px-8 bg-slate-100 min-h-[100dvh]">
+			<main className="py-6 px-4 sm:p-6 md:py-10 md:px-8 bg-slate-100 min-h-[100dvh]">
+				<dialog
+					id="my_modal_4"
+					className={openModal ? "modal modal-open" : "modal"}
+				>
+					<div className="modal-box w-11/12 max-w-5xl">
+						<h3 className="font-bold text-lg">
+							Hello! This is your first time signing in to WeCare.
+						</h3>
+						<p className="py-4">Please select one or more topic of interest</p>
+						<div className="flex flex-wrap">
+							{checkboxes.map((el) => {
+								return (
+									<label
+										key={el.id}
+										className="label cursor-pointer mx-4 w-1/5 p-2 hover:bg-black/40 rounded-xl"
+									>
+										<span className="label-text mx-4 hover:text-slate-100">
+											{el.name}
+										</span>
+										<input
+											id={el.id}
+											type="checkbox"
+											className="checkbox"
+											name={el.name}
+											onChange={editCheck}
+										/>
+									</label>
+								);
+							})}
+						</div>
+						<div className="modal-action">
+							<form method="dialog">
+								{/* if there is a button, it will close the modal */}
+								<button
+									className="btn"
+									onClick={() => {
+										handleSubmit();
+										setOpenModal(false);
+									}}
+								>
+									Submit
+								</button>
+							</form>
+						</div>
+					</div>
+				</dialog>
 				{/* Depression */}
 				<br />
 
 				<br />
-				<div class="max-w-4xl mx-auto grid grid-cols-1 lg:max-w-5xl lg:gap-x-20 lg:grid-cols-2">
-					<div class="relative p-3 col-start-1 row-start-1 flex flex-col-reverse rounded-lg bg-gradient-to-t from-black/75 via-black/0 sm:bg-none sm:row-start-2 sm:p-0 lg:row-start-1">
-						<h1 class="mt-1 text-xl font-semibold text-white sm:text-slate-900 md:text-2xl">
+				<div className="max-w-4xl mx-auto grid grid-cols-1 lg:max-w-5xl lg:gap-x-20 lg:grid-cols-2">
+					<div className="relative p-3 col-start-1 row-start-1 flex flex-col-reverse rounded-lg bg-gradient-to-t from-black/75 via-black/0 sm:bg-none sm:row-start-2 sm:p-0 lg:row-start-1">
+						<h1 className="mt-1 text-xl font-semibold text-white sm:text-slate-900 md:text-2xl">
 							Depression
 						</h1>
 					</div>
-					<div class="grid gap-4 col-start-1 col-end-3 row-start-1 sm:mb-6 sm:grid-cols-4 lg:gap-6 lg:col-start-2 lg:row-end-6 lg:row-span-6 lg:mb-0">
+					<div className="grid gap-4 col-start-1 col-end-3 row-start-1 sm:mb-6 sm:grid-cols-4 lg:gap-6 lg:col-start-2 lg:row-end-6 lg:row-span-6 lg:mb-0">
 						<img
 							src="https://m1.healio.com/~/media/slack-news/stock-images/fm_im/d/doctor_with_depressed_elderly_patient_adobe.jpg"
 							alt=""
-							class="w-full h-60 object-cover rounded-lg sm:h-72 sm:col-span-2 lg:col-span-full"
+							className="w-full h-60 object-cover rounded-lg sm:h-72 sm:col-span-2 lg:col-span-full"
 							loading="lazy"
 						></img>
 						<img
 							src="https://www.patientfirst.com/Portals/0/LiveBlog/549/Patient-First-Depression-Symptoms.jpg?ver=LsiGTtKj8yNXXvXOum1UDw%3d%3d"
 							alt=""
-							class="hidden w-full h-52 object-cover rounded-lg sm:block sm:col-span-2 md:col-span-1 lg:row-start-2 lg:col-span-2 lg:h-56"
+							className="hidden w-full h-52 object-cover rounded-lg sm:block sm:col-span-2 md:col-span-1 lg:row-start-2 lg:col-span-2 lg:h-56"
 							loading="lazy"
 						></img>
 						<img
 							src="https://png.pngtree.com/thumb_back/fw800/background/20221210/pngtree-elderly-patient-conversing-on-a-video-call-within-hospital-room-photo-image_43312524.jpg"
 							alt=""
-							class="hidden w-full h-52 object-cover rounded-lg md:block lg:row-start-2 lg:col-span-2 lg:h-56"
+							className="hidden w-full h-52 object-cover rounded-lg md:block lg:row-start-2 lg:col-span-2 lg:h-56"
 							loading="lazy"
 						></img>
 					</div>
-					<p class="mt-4 text-l leading-6 col-start-1 sm:col-span-2 lg:mt-6 lg:row-start-4 lg:col-span-1 dark:text-slate-800">
+					<p className="mt-4 text-l leading-6 col-start-1 sm:col-span-2 lg:mt-6 lg:row-start-4 lg:col-span-1 dark:text-slate-800">
 						<strong>"Depression"</strong> is a common and serious mental illness
 						that affects how you feel, the way you think and how you act. It can
 						lead to a variety of emotional and physical problems and can
@@ -57,33 +195,33 @@ const HomePage = () => {
 				<hr className="w-full my-6 border-solid border-[#2596be] border-y-[1px]" />
 
 				{/* Anxiety Disorders */}
-				<div class="max-w-4xl mx-auto grid grid-cols-1 lg:max-w-5xl lg:gap-x-20 lg:grid-cols-2">
-					<div class="relative p-3 col-start-1 row-start-1 flex flex-col-reverse rounded-lg bg-gradient-to-t from-black/75 via-black/0 sm:bg-none sm:row-start-2 sm:p-0 lg:row-start-1">
-						<h1 class="mt-1 text-xl font-semibold text-white sm:text-slate-900 md:text-2xl">
+				<div className="max-w-4xl mx-auto grid grid-cols-1 lg:max-w-5xl lg:gap-x-20 lg:grid-cols-2">
+					<div className="relative p-3 col-start-1 row-start-1 flex flex-col-reverse rounded-lg bg-gradient-to-t from-black/75 via-black/0 sm:bg-none sm:row-start-2 sm:p-0 lg:row-start-1">
+						<h1 className="mt-1 text-xl font-semibold text-white sm:text-slate-900 md:text-2xl">
 							Anxiety Disorders
 						</h1>
 					</div>
-					<div class="grid gap-4 col-start-1 col-end-3 row-start-1 sm:mb-6 sm:grid-cols-4 lg:gap-6 lg:col-start-2 lg:row-end-6 lg:row-span-6 lg:mb-0">
+					<div className="grid gap-4 col-start-1 col-end-3 row-start-1 sm:mb-6 sm:grid-cols-4 lg:gap-6 lg:col-start-2 lg:row-end-6 lg:row-span-6 lg:mb-0">
 						<img
 							src="https://apollohealthlib.blob.core.windows.net/health-library/2021/10/Social-Anxiety-Disorder.jpg"
 							alt=""
-							class="w-full h-60 object-cover rounded-lg sm:h-72 sm:col-span-2 lg:col-span-full"
+							className="w-full h-60 object-cover rounded-lg sm:h-72 sm:col-span-2 lg:col-span-full"
 							loading="lazy"
 						></img>
 						<img
 							src="https://b3029661.smushcdn.com/3029661/wp-content/uploads/shutterstock_1997810168-980x490.jpg?lossy=1&strip=1&webp=1"
 							alt=""
-							class="hidden w-full h-52 object-cover rounded-lg sm:block sm:col-span-2 md:col-span-1 lg:row-start-2 lg:col-span-2 lg:h-56"
+							className="hidden w-full h-52 object-cover rounded-lg sm:block sm:col-span-2 md:col-span-1 lg:row-start-2 lg:col-span-2 lg:h-56"
 							loading="lazy"
 						></img>
 						<img
 							src="https://www.amenclinics.com/wp-content/uploads/2022/08/Blog-Difference-Between-Situational-Anxiety-and-an-Anxiety-Disorder_800x400-1.jpg"
 							alt=""
-							class="hidden w-full h-52 object-cover rounded-lg md:block lg:row-start-2 lg:col-span-2 lg:h-56"
+							className="hidden w-full h-52 object-cover rounded-lg md:block lg:row-start-2 lg:col-span-2 lg:h-56"
 							loading="lazy"
 						></img>
 					</div>
-					<p class="mt-4 text-l leading-6 col-start-1 sm:col-span-2 lg:mt-6 lg:row-start-4 lg:col-span-1 dark:text-slate-800">
+					<p className="mt-4 text-l leading-6 col-start-1 sm:col-span-2 lg:mt-6 lg:row-start-4 lg:col-span-1 dark:text-slate-800">
 						<strong>"Anxiety disorders"</strong> are a group of mental illnesses
 						characterized by excessive worry, fear, and tension. These feelings
 						can interfere with daily activities and cause significant distress.
@@ -114,33 +252,33 @@ const HomePage = () => {
 				<hr className="w-full my-6 border-solid border-[#2596be] border-y-[1px]" />
 
 				{/* Schizophrenia */}
-				<div class="max-w-4xl mx-auto grid grid-cols-1 lg:max-w-5xl lg:gap-x-20 lg:grid-cols-2">
-					<div class="relative p-3 col-start-1 row-start-1 flex flex-col-reverse rounded-lg bg-gradient-to-t from-black/75 via-black/0 sm:bg-none sm:row-start-2 sm:p-0 lg:row-start-1">
-						<h1 class="mt-1 text-xl font-semibold text-white sm:text-slate-900 md:text-2xl">
+				<div className="max-w-4xl mx-auto grid grid-cols-1 lg:max-w-5xl lg:gap-x-20 lg:grid-cols-2">
+					<div className="relative p-3 col-start-1 row-start-1 flex flex-col-reverse rounded-lg bg-gradient-to-t from-black/75 via-black/0 sm:bg-none sm:row-start-2 sm:p-0 lg:row-start-1">
+						<h1 className="mt-1 text-xl font-semibold text-white sm:text-slate-900 md:text-2xl">
 							Schizophrenia
 						</h1>
 					</div>
-					<div class="grid gap-4 col-start-1 col-end-3 row-start-1 sm:mb-6 sm:grid-cols-4 lg:gap-6 lg:col-start-2 lg:row-end-6 lg:row-span-6 lg:mb-0">
+					<div className="grid gap-4 col-start-1 col-end-3 row-start-1 sm:mb-6 sm:grid-cols-4 lg:gap-6 lg:col-start-2 lg:row-end-6 lg:row-span-6 lg:mb-0">
 						<img
 							src="https://shsinc.org/wp-content/uploads/2022/05/shutterstock_1907039458-980x653.jpg"
 							alt=""
-							class="w-full h-60 object-cover rounded-lg sm:h-72 sm:col-span-2 lg:col-span-full"
+							className="w-full h-60 object-cover rounded-lg sm:h-72 sm:col-span-2 lg:col-span-full"
 							loading="lazy"
 						></img>
 						<img
-							src="https://futurepsychsolutions.com/wp-content/uploads/schizophrenia-2204.jpg"
+							src="https://medicaldialogues.in/h-upload/2020/01/20/123284-schizophrenia.jpg"
 							alt=""
-							class="hidden w-full h-52 object-cover rounded-lg sm:block sm:col-span-2 md:col-span-1 lg:row-start-2 lg:col-span-2 lg:h-56"
+							className="hidden w-full h-52 object-cover rounded-lg sm:block sm:col-span-2 md:col-span-1 lg:row-start-2 lg:col-span-2 lg:h-56"
 							loading="lazy"
 						></img>
 						<img
 							src="https://www.medindia.net/health-images/symptoms-of-schizophrenia.jpg"
 							alt=""
-							class="hidden w-full h-52 object-cover rounded-lg md:block lg:row-start-2 lg:col-span-2 lg:h-56"
+							className="hidden w-full h-52 object-cover rounded-lg md:block lg:row-start-2 lg:col-span-2 lg:h-56"
 							loading="lazy"
 						></img>
 					</div>
-					<p class="mt-4 text-l leading-6 col-start-1 sm:col-span-2 lg:mt-6 lg:row-start-4 lg:col-span-1 dark:text-slate-800">
+					<p className="mt-4 text-l leading-6 col-start-1 sm:col-span-2 lg:mt-6 lg:row-start-4 lg:col-span-1 dark:text-slate-800">
 						<strong>"Schizophrenia"</strong> is a chronic mental illness
 						characterized by a breakdown of an individual's ability to perceive
 						reality. People with schizophrenia may experience a range of
@@ -172,33 +310,33 @@ const HomePage = () => {
 				<hr className="w-full my-6 border-solid border-[#2596be] border-y-[1px]" />
 
 				{/* Bipolar Disorder */}
-				<div class="max-w-4xl mx-auto grid grid-cols-1 lg:max-w-5xl lg:gap-x-20 lg:grid-cols-2">
-					<div class="relative p-3 col-start-1 row-start-1 flex flex-col-reverse rounded-lg bg-gradient-to-t from-black/75 via-black/0 sm:bg-none sm:row-start-2 sm:p-0 lg:row-start-1">
-						<h1 class="mt-1 text-xl font-semibold text-white sm:text-slate-900 md:text-2xl">
+				<div className="max-w-4xl mx-auto grid grid-cols-1 lg:max-w-5xl lg:gap-x-20 lg:grid-cols-2">
+					<div className="relative p-3 col-start-1 row-start-1 flex flex-col-reverse rounded-lg bg-gradient-to-t from-black/75 via-black/0 sm:bg-none sm:row-start-2 sm:p-0 lg:row-start-1">
+						<h1 className="mt-1 text-xl font-semibold text-white sm:text-slate-900 md:text-2xl">
 							Bipolar Disorder
 						</h1>
 					</div>
-					<div class="grid gap-4 col-start-1 col-end-3 row-start-1 sm:mb-6 sm:grid-cols-4 lg:gap-6 lg:col-start-2 lg:row-end-6 lg:row-span-6 lg:mb-0">
+					<div className="grid gap-4 col-start-1 col-end-3 row-start-1 sm:mb-6 sm:grid-cols-4 lg:gap-6 lg:col-start-2 lg:row-end-6 lg:row-span-6 lg:mb-0">
 						<img
 							src="https://hips.hearstapps.com/hmg-prod/images/766/8-questions-therapists-ask-to-diagnose-bipolar-disorder-main-1499899746.jpg"
 							alt=""
-							class="w-full h-60 object-cover rounded-lg sm:h-72 sm:col-span-2 lg:col-span-full"
+							className="w-full h-60 object-cover rounded-lg sm:h-72 sm:col-span-2 lg:col-span-full"
 							loading="lazy"
 						></img>
 						<img
 							src="https://aminoco.com/cdn/shop/articles/FeaturedImage_Schizo.jpg?v=1592868680"
 							alt=""
-							class="hidden w-full h-52 object-cover rounded-lg sm:block sm:col-span-2 md:col-span-1 lg:row-start-2 lg:col-span-2 lg:h-56"
+							className="hidden w-full h-52 object-cover rounded-lg sm:block sm:col-span-2 md:col-span-1 lg:row-start-2 lg:col-span-2 lg:h-56"
 							loading="lazy"
 						></img>
 						<img
 							src="https://www.myhealth1st.com.au/static/assets/images/6Tfsw9wQQbvjxjZYnDzBQy/bipolar-disorder.png"
 							alt=""
-							class="hidden w-full h-52 object-cover rounded-lg md:block lg:row-start-2 lg:col-span-2 lg:h-56"
+							className="hidden w-full h-52 object-cover rounded-lg md:block lg:row-start-2 lg:col-span-2 lg:h-56"
 							loading="lazy"
 						></img>
 					</div>
-					<p class="mt-4 text-l leading-6 col-start-1 sm:col-span-2 lg:mt-6 lg:row-start-4 lg:col-span-1 dark:text-slate-800">
+					<p className="mt-4 text-l leading-6 col-start-1 sm:col-span-2 lg:mt-6 lg:row-start-4 lg:col-span-1 dark:text-slate-800">
 						<strong>"Bipolar Disorder"</strong> , formerly known as
 						manic-depressive illness or manic depression, is a mental health
 						condition that causes extreme mood swings that include emotional
@@ -234,33 +372,33 @@ const HomePage = () => {
 				<hr className="w-full my-6 border-solid border-[#2596be] border-y-[1px]" />
 
 				{/* Diabetes */}
-				<div class="max-w-4xl mx-auto grid grid-cols-1 lg:max-w-5xl lg:gap-x-20 lg:grid-cols-2">
-					<div class="relative p-3 col-start-1 row-start-1 flex flex-col-reverse rounded-lg bg-gradient-to-t from-black/75 via-black/0 sm:bg-none sm:row-start-2 sm:p-0 lg:row-start-1">
-						<h1 class="mt-1 text-xl font-semibold text-white sm:text-slate-900 md:text-2xl">
+				<div className="max-w-4xl mx-auto grid grid-cols-1 lg:max-w-5xl lg:gap-x-20 lg:grid-cols-2">
+					<div className="relative p-3 col-start-1 row-start-1 flex flex-col-reverse rounded-lg bg-gradient-to-t from-black/75 via-black/0 sm:bg-none sm:row-start-2 sm:p-0 lg:row-start-1">
+						<h1 className="mt-1 text-xl font-semibold text-white sm:text-slate-900 md:text-2xl">
 							Diabetes
 						</h1>
 					</div>
-					<div class="grid gap-4 col-start-1 col-end-3 row-start-1 sm:mb-6 sm:grid-cols-4 lg:gap-6 lg:col-start-2 lg:row-end-6 lg:row-span-6 lg:mb-0">
+					<div className="grid gap-4 col-start-1 col-end-3 row-start-1 sm:mb-6 sm:grid-cols-4 lg:gap-6 lg:col-start-2 lg:row-end-6 lg:row-span-6 lg:mb-0">
 						<img
 							src="https://i0.wp.com/post.healthline.com/wp-content/uploads/2022/12/doctor-patient-home-diabetes-1296x728-header-1296x729.jpg?w=1155&h=2268"
 							alt=""
-							class="w-full h-60 object-cover rounded-lg sm:h-72 sm:col-span-2 lg:col-span-full"
+							className="w-full h-60 object-cover rounded-lg sm:h-72 sm:col-span-2 lg:col-span-full"
 							loading="lazy"
 						></img>
 						<img
 							src="https://resources.amedisys.com/hubfs/Nursing-Care-Plan-Diabetes.jpg"
 							alt=""
-							class="hidden w-full h-52 object-cover rounded-lg sm:block sm:col-span-2 md:col-span-1 lg:row-start-2 lg:col-span-2 lg:h-56"
+							className="hidden w-full h-52 object-cover rounded-lg sm:block sm:col-span-2 md:col-span-1 lg:row-start-2 lg:col-span-2 lg:h-56"
 							loading="lazy"
 						></img>
 						<img
 							src="https://diabetesonthenet.com/wp-content/uploads/Young-adult-type-2-diabetes-iStock-1387024489.jpg"
 							alt=""
-							class="hidden w-full h-52 object-cover rounded-lg md:block lg:row-start-2 lg:col-span-2 lg:h-56"
+							className="hidden w-full h-52 object-cover rounded-lg md:block lg:row-start-2 lg:col-span-2 lg:h-56"
 							loading="lazy"
 						></img>
 					</div>
-					<p class="mt-4 text-l leading-6 col-start-1 sm:col-span-2 lg:mt-6 lg:row-start-4 lg:col-span-1 dark:text-slate-800">
+					<p className="mt-4 text-l leading-6 col-start-1 sm:col-span-2 lg:mt-6 lg:row-start-4 lg:col-span-1 dark:text-slate-800">
 						<strong>"Diabetes"</strong> is a chronic health condition that
 						affects how your body turns food into energy. There are two main
 						types of diabetes: type 1 and type 2.
@@ -295,33 +433,33 @@ const HomePage = () => {
 				<hr className="w-full my-6 border-solid border-[#2596be] border-y-[1px]" />
 
 				{/* Hypertension */}
-				<div class="max-w-4xl mx-auto grid grid-cols-1 lg:max-w-5xl lg:gap-x-20 lg:grid-cols-2">
-					<div class="relative p-3 col-start-1 row-start-1 flex flex-col-reverse rounded-lg bg-gradient-to-t from-black/75 via-black/0 sm:bg-none sm:row-start-2 sm:p-0 lg:row-start-1">
-						<h1 class="mt-1 text-xl font-semibold text-white sm:text-slate-900 md:text-2xl">
+				<div className="max-w-4xl mx-auto grid grid-cols-1 lg:max-w-5xl lg:gap-x-20 lg:grid-cols-2">
+					<div className="relative p-3 col-start-1 row-start-1 flex flex-col-reverse rounded-lg bg-gradient-to-t from-black/75 via-black/0 sm:bg-none sm:row-start-2 sm:p-0 lg:row-start-1">
+						<h1 className="mt-1 text-xl font-semibold text-white sm:text-slate-900 md:text-2xl">
 							Hypertension
 						</h1>
 					</div>
-					<div class="grid gap-4 col-start-1 col-end-3 row-start-1 sm:mb-6 sm:grid-cols-4 lg:gap-6 lg:col-start-2 lg:row-end-6 lg:row-span-6 lg:mb-0">
+					<div className="grid gap-4 col-start-1 col-end-3 row-start-1 sm:mb-6 sm:grid-cols-4 lg:gap-6 lg:col-start-2 lg:row-end-6 lg:row-span-6 lg:mb-0">
 						<img
 							src="https://drkumo.com/wp-content/uploads/2023/01/hypostatic-hypertension-doctor-measures-patient-blood-pressure-1024x536.webp"
 							alt=""
-							class="w-full h-60 object-cover rounded-lg sm:h-72 sm:col-span-2 lg:col-span-full"
+							className="w-full h-60 object-cover rounded-lg sm:h-72 sm:col-span-2 lg:col-span-full"
 							loading="lazy"
 						></img>
 						<img
 							src="https://myheart.net/wp-content/uploads/2013/06/hypertension.jpg"
 							alt=""
-							class="hidden w-full h-52 object-cover rounded-lg sm:block sm:col-span-2 md:col-span-1 lg:row-start-2 lg:col-span-2 lg:h-56"
+							className="hidden w-full h-52 object-cover rounded-lg sm:block sm:col-span-2 md:col-span-1 lg:row-start-2 lg:col-span-2 lg:h-56"
 							loading="lazy"
 						></img>
 						<img
 							src="https://www.aafp.org/content/dam/brand/aafp/news/2022-december/hypertension-guidance800.jpg"
 							alt=""
-							class="hidden w-full h-52 object-cover rounded-lg md:block lg:row-start-2 lg:col-span-2 lg:h-56"
+							className="hidden w-full h-52 object-cover rounded-lg md:block lg:row-start-2 lg:col-span-2 lg:h-56"
 							loading="lazy"
 						></img>
 					</div>
-					<p class="mt-4 text-l leading-6 col-start-1 sm:col-span-2 lg:mt-6 lg:row-start-4 lg:col-span-1 dark:text-slate-800">
+					<p className="mt-4 text-l leading-6 col-start-1 sm:col-span-2 lg:mt-6 lg:row-start-4 lg:col-span-1 dark:text-slate-800">
 						<strong>"Hypertension"</strong> also known as high blood pressure,
 						is a chronic medical condition in which the blood pressure in the
 						arteries is persistently elevated. Blood pressure is the force
@@ -351,33 +489,33 @@ const HomePage = () => {
 				<hr className="w-full my-6 border-solid border-[#2596be] border-y-[1px]" />
 
 				{/* Osteoarthritis */}
-				<div class="max-w-4xl mx-auto grid grid-cols-1 lg:max-w-5xl lg:gap-x-20 lg:grid-cols-2">
-					<div class="relative p-3 col-start-1 row-start-1 flex flex-col-reverse rounded-lg bg-gradient-to-t from-black/75 via-black/0 sm:bg-none sm:row-start-2 sm:p-0 lg:row-start-1">
-						<h1 class="mt-1 text-xl font-semibold text-white sm:text-slate-900 md:text-2xl">
+				<div className="max-w-4xl mx-auto grid grid-cols-1 lg:max-w-5xl lg:gap-x-20 lg:grid-cols-2">
+					<div className="relative p-3 col-start-1 row-start-1 flex flex-col-reverse rounded-lg bg-gradient-to-t from-black/75 via-black/0 sm:bg-none sm:row-start-2 sm:p-0 lg:row-start-1">
+						<h1 className="mt-1 text-xl font-semibold text-white sm:text-slate-900 md:text-2xl">
 							Osteoarthritis
 						</h1>
 					</div>
-					<div class="grid gap-4 col-start-1 col-end-3 row-start-1 sm:mb-6 sm:grid-cols-4 lg:gap-6 lg:col-start-2 lg:row-end-6 lg:row-span-6 lg:mb-0">
+					<div className="grid gap-4 col-start-1 col-end-3 row-start-1 sm:mb-6 sm:grid-cols-4 lg:gap-6 lg:col-start-2 lg:row-end-6 lg:row-span-6 lg:mb-0">
 						<img
 							src="https://cdn-prod.medicalnewstoday.com/content/images/articles/324/324979/doctor-checking-patient-s-knee.jpg"
 							alt=""
-							class="w-full h-60 object-cover rounded-lg sm:h-72 sm:col-span-2 lg:col-span-full"
+							className="w-full h-60 object-cover rounded-lg sm:h-72 sm:col-span-2 lg:col-span-full"
 							loading="lazy"
 						></img>
 						<img
 							src="https://hulc.ca/wp-content/uploads/2019/01/osteo-hands.jpg?w=624"
 							alt=""
-							class="hidden w-full h-52 object-cover rounded-lg sm:block sm:col-span-2 md:col-span-1 lg:row-start-2 lg:col-span-2 lg:h-40"
+							className="hidden w-full h-52 object-cover rounded-lg sm:block sm:col-span-2 md:col-span-1 lg:row-start-2 lg:col-span-2 lg:h-40"
 							loading="lazy"
 						></img>
 						<img
 							src="https://www.orthopaedicsurgeon.com.sg/wp-content/uploads/2011/11/Patient_OA_Knee.jpg"
 							alt=""
-							class="hidden w-full h-52 object-cover rounded-lg md:block lg:row-start-2 lg:col-span-2 lg:h-56"
+							className="hidden w-full h-52 object-cover rounded-lg md:block lg:row-start-2 lg:col-span-2 lg:h-56"
 							loading="lazy"
 						></img>
 					</div>
-					<p class="mt-4 text-l leading-6 col-start-1 sm:col-span-2 lg:mt-6 lg:row-start-4 lg:col-span-1 dark:text-slate-800">
+					<p className="mt-4 text-l leading-6 col-start-1 sm:col-span-2 lg:mt-6 lg:row-start-4 lg:col-span-1 dark:text-slate-800">
 						<strong>"Osteoarthritis" (OA)</strong> is a degenerative joint
 						disease that is characterized by the breakdown of cartilage and
 						other tissues within the joint. Cartilage is a firm, slippery tissue
@@ -415,33 +553,33 @@ const HomePage = () => {
 				<hr className="w-full my-6 border-solid border-[#2596be] border-y-[1px]" />
 
 				{/* Asthma */}
-				<div class="max-w-4xl mx-auto grid grid-cols-1 lg:max-w-5xl lg:gap-x-20 lg:grid-cols-2">
-					<div class="relative p-3 col-start-1 row-start-1 flex flex-col-reverse rounded-lg bg-gradient-to-t from-black/75 via-black/0 sm:bg-none sm:row-start-2 sm:p-0 lg:row-start-1">
-						<h1 class="mt-1 text-xl font-semibold text-white sm:text-slate-900 md:text-2xl">
+				<div className="max-w-4xl mx-auto grid grid-cols-1 lg:max-w-5xl lg:gap-x-20 lg:grid-cols-2">
+					<div className="relative p-3 col-start-1 row-start-1 flex flex-col-reverse rounded-lg bg-gradient-to-t from-black/75 via-black/0 sm:bg-none sm:row-start-2 sm:p-0 lg:row-start-1">
+						<h1 className="mt-1 text-xl font-semibold text-white sm:text-slate-900 md:text-2xl">
 							Asthma
 						</h1>
 					</div>
-					<div class="grid gap-4 col-start-1 col-end-3 row-start-1 sm:mb-6 sm:grid-cols-4 lg:gap-6 lg:col-start-2 lg:row-end-6 lg:row-span-6 lg:mb-0">
+					<div className="grid gap-4 col-start-1 col-end-3 row-start-1 sm:mb-6 sm:grid-cols-4 lg:gap-6 lg:col-start-2 lg:row-end-6 lg:row-span-6 lg:mb-0">
 						<img
 							src="https://www.myallergydr.com/wp-content/uploads/2016/09/Airway-Obstruction-With-Asthma-Crystal-Lake.jpg"
 							alt=""
-							class="w-full h-60 object-cover rounded-lg sm:h-72 sm:col-span-2 lg:col-span-full"
+							className="w-full h-60 object-cover rounded-lg sm:h-72 sm:col-span-2 lg:col-span-full"
 							loading="lazy"
 						></img>
 						<img
 							src="https://nortonhealthcareprovider.com/wp-content/uploads/severe-asthma-when-to-refer.jpg"
 							alt=""
-							class="hidden w-full h-52 object-cover rounded-lg sm:block sm:col-span-2 md:col-span-1 lg:row-start-2 lg:col-span-2 lg:h-56"
+							className="hidden w-full h-52 object-cover rounded-lg sm:block sm:col-span-2 md:col-span-1 lg:row-start-2 lg:col-span-2 lg:h-56"
 							loading="lazy"
 						></img>
 						<img
 							src="https://s3-us-west-2.amazonaws.com/utsw-patientcare-web-production/original_images/pediatric_asthma_inhaler_600.jpg"
 							alt=""
-							class="hidden w-full h-52 object-cover rounded-lg md:block lg:row-start-2 lg:col-span-2 lg:h-56"
+							className="hidden w-full h-52 object-cover rounded-lg md:block lg:row-start-2 lg:col-span-2 lg:h-56"
 							loading="lazy"
 						></img>
 					</div>
-					<p class="mt-4 text-l leading-6 col-start-1 sm:col-span-2 lg:mt-6 lg:row-start-4 lg:col-span-1 dark:text-slate-800">
+					<p className="mt-4 text-l leading-6 col-start-1 sm:col-span-2 lg:mt-6 lg:row-start-4 lg:col-span-1 dark:text-slate-800">
 						<strong>"Asthma"</strong> Asthma is a chronic respiratory condition
 						characterized by inflammation and narrowing of the airways, also
 						known as bronchial tubes. These narrowed airways make it difficult
