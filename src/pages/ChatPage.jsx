@@ -9,8 +9,8 @@ import {
 export default function ChatPage() {
 	const chatProps = useMultiChatLogic(
 		"ce7d3869-0c1b-4129-9299-5428dc2cd481",
-		"chrisjs",
-		"chrisjs"
+		localStorage.getItem("username"),
+		localStorage.getItem("username")
 	);
 	return (
 		<>
