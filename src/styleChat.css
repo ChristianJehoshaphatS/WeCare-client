@@ -1,0 +1,134 @@
+.ce-chat-engine {
+	margin: 0 !important;
+	font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif !important;
+}
+
+.ce-chat-card-title,
+.ce-chat-form-title,
+#ce-chat-feed-title-,
+.ce-chat-settings-title,
+.ce-dropdown-label,
+.ce-their-message-sender-username {
+	color: #2596be !important;
+	font-weight: 500 !important;
+	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif !important;
+}
+
+.ce-chat-card-time-stamp,
+.ce-chat-card-subtitle-html,
+.ce-message-date-text,
+.ce-their-message-body,
+.ce-their-message-timestamp,
+.ce-my-message-timestamp,
+.ce-dropdown-children {
+	color: #000000 !important;
+	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif !important;
+}
+
+.ce-avatar-dot {
+	display: none !important;
+}
+
+#ce-send-message-button {
+	margin-left: 10px !important;
+	background-color: aliceblue !important;
+	color: #000000 !important;
+	border: solid 1px #2596be;
+	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif !important;
+	margin-right: 5px !important;
+}
+
+.ce-message-list {
+	padding: 10px 0 !important;
+}
+
+#ce-message-form {
+	background-color: rgb(245, 237, 216);
+}
+
+#ce-send-message-button:hover {
+	background-color: #156784 !important;
+	color: #ffffff !important;
+}
+
+.ce-my-message-body {
+	background-color: #2596be !important;
+	color: #ffffff !important;
+	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif !important;
+	margin-right: 5px !important;
+}
+
+/* width */
+::-webkit-scrollbar {
+	width: 7px !important;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+	background: #ffffff !important;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+	background: #888 !important;
+	border-radius: 100px !important;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+	background: #555 !important;
+}
+
+.ce-default-button,
+.ce-chat-form-button {
+	/* display: none !important; */
+	padding: 0 16px !important;
+}
+.ce-chat-header {
+	height: 6rem !important;
+}
+
+.ce-autocomplete-input,
+.ce-message-form-input {
+	background-color: aliceblue !important;
+	/* border: solid 1px #2596be !important; */
+}
+
+.ce-message-form-input {
+	margin-left: 15px !important;
+	width: calc((100% - 24px) - 110px) !important;
+	height: 36px !important;
+	border-radius: 50px !important;
+	padding: 7px 15px !important;
+}
+
+.ce-autocomplete-input::placeholder,
+.ce-message-form-input::placeholder {
+	color: black;
+}
+
+.ce-their-message {
+	display: flex !important;
+	flex-direction: column !important;
+	gap: 0.1rem !important;
+}
+
+#ce-settings-options-dropdown {
+	display: none !important;
+}
+
+.ce-their-message-body {
+	margin-left: 60px !important;
+}
+.ce-avatar {
+	margin-left: 5px !important;
+}
+
+@media (max-width: 576px) {
+	/* … */
+	.ce-default-button,
+	.ce-chat-form-button {
+		/* display: none !important; */
+		padding: 10px 16px !important;
+	}
+}

@@ -5,6 +5,7 @@ import logo from "../assets/wecarelogo.png";
 const navigation = [
 	{name: "Home", href: "/home", current: false},
 	{name: "Chat Groups", href: "/chat", current: false},
+	{name: "Video Chat", href: "/video", current: false},
 ];
 
 function classNames(...classes) {

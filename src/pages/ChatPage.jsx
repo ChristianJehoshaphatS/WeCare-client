@@ -1,4 +1,5 @@
 import React from "react";
+import "../styleChat.css";
 
 import {
 	MultiChatSocket,
@@ -14,7 +15,7 @@ export default function ChatPage() {
 	);
 	return (
 		<>
-			<div style={{height: "90dvh", top: "1000px"}} className="mt-[5%]">
+			<div style={{height: "90dvh"}} className="mt-[4rem]">
 				<MultiChatWindow {...chatProps} />
 				<MultiChatSocket {...chatProps} />
 			</div>
