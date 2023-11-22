@@ -7,7 +7,8 @@ import {
 	closeModal,
 	addCheck,
 	removeCheck,
-	setGroups,
+	fetchGroupsAsync,
+	submitGroup,
 } from "../features/homeGroups/homeSlice";
 
 const HomePage = () => {
@@ -17,32 +18,16 @@ const HomePage = () => {
 	const joinedGroup = useSelector((state) => state.home.groups);
 	console.log(Modal);
 	// const [openModal, setOpenModal] = useState(false);
-	const open = () => {
+
+	useEffect(() => {
 		const first = localStorage.getItem("firstTime");
 		if (first === "true") {
 			dispatch(openModal());
+		} else {
+			dispatch(closeModal());
 		}
-	};
-	useEffect(() => {
-		open();
-		const fetchGroups = async () => {
-			const {data} = await axios.get("http://localhost:3000/usergroup", {
-				headers: {
-					Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-				},
-			});
-			console.log(data);
-			const group = [];
-			data?.forEach((el) => {
-				console.log(el.Group.title);
-				group.push(el.Group.title);
-			});
-			dispatch(setGroups(group));
-		};
-		fetchGroups();
-	}, []);
-
-	const [check2, setCheck] = useState([]);
+		dispatch(fetchGroupsAsync());
+	}, [Modal, check]);
 
 	const checkboxes = [
 		{
@@ -94,33 +79,7 @@ const HomePage = () => {
 	};
 
 	const handleSubmit = async () => {
-		try {
-			const {data} = await axios.post(
-				"http://localhost:3000/usergroup",
-				check,
-				{
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-					},
-				}
-			);
-			console.log(data);
-
-			await axios.patch(
-				"http://localhost:3000/user",
-				{},
-				{
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-					},
-				}
-			);
-
-			localStorage.setItem("firstTime", false);
-			setCheck([]);
-		} catch (error) {
-			console.log(error);
-		}
+		dispatch(submitGroup());
 	};
 	return (
 		<>
@@ -175,7 +134,7 @@ const HomePage = () => {
 				<br />
 
 				<br />
-				{joinedGroup.Depression && (
+				{joinedGroup?.Depression && (
 					<>
 						<div className="max-w-4xl mx-auto grid grid-cols-1 lg:max-w-5xl lg:gap-x-20 lg:grid-cols-2">
 							<div className="relative p-3 col-start-1 row-start-1 flex flex-col-reverse rounded-lg bg-gradient-to-t from-black/75 via-black/0 sm:bg-none sm:row-start-2 sm:p-0 lg:row-start-1">
@@ -230,7 +189,7 @@ const HomePage = () => {
 				)}
 
 				{/* Anxiety Disorders */}
-				{joinedGroup["Anxiety Disorders"] && (
+				{joinedGroup?.["Anxiety Disorders"] && (
 					<>
 						<div className="max-w-4xl mx-auto grid grid-cols-1 lg:max-w-5xl lg:gap-x-20 lg:grid-cols-2">
 							<div className="relative p-3 col-start-1 row-start-1 flex flex-col-reverse rounded-lg bg-gradient-to-t from-black/75 via-black/0 sm:bg-none sm:row-start-2 sm:p-0 lg:row-start-1">
@@ -291,7 +250,7 @@ const HomePage = () => {
 				)}
 
 				{/* Schizophrenia */}
-				{joinedGroup.Schizophrenia && (
+				{joinedGroup?.Schizophrenia && (
 					<>
 						<div className="max-w-4xl mx-auto grid grid-cols-1 lg:max-w-5xl lg:gap-x-20 lg:grid-cols-2">
 							<div className="relative p-3 col-start-1 row-start-1 flex flex-col-reverse rounded-lg bg-gradient-to-t from-black/75 via-black/0 sm:bg-none sm:row-start-2 sm:p-0 lg:row-start-1">
@@ -353,7 +312,7 @@ const HomePage = () => {
 				)}
 
 				{/* Bipolar Disorder */}
-				{joinedGroup["Bipolar Disorder"] && (
+				{joinedGroup?.["Bipolar Disorder"] && (
 					<>
 						<div className="max-w-4xl mx-auto grid grid-cols-1 lg:max-w-5xl lg:gap-x-20 lg:grid-cols-2">
 							<div className="relative p-3 col-start-1 row-start-1 flex flex-col-reverse rounded-lg bg-gradient-to-t from-black/75 via-black/0 sm:bg-none sm:row-start-2 sm:p-0 lg:row-start-1">
@@ -419,7 +378,7 @@ const HomePage = () => {
 				)}
 
 				{/* Diabetes */}
-				{joinedGroup["Diabetes Mellitus"] && (
+				{joinedGroup?.["Diabetes Mellitus"] && (
 					<>
 						<div className="max-w-4xl mx-auto grid grid-cols-1 lg:max-w-5xl lg:gap-x-20 lg:grid-cols-2">
 							<div className="relative p-3 col-start-1 row-start-1 flex flex-col-reverse rounded-lg bg-gradient-to-t from-black/75 via-black/0 sm:bg-none sm:row-start-2 sm:p-0 lg:row-start-1">
@@ -487,7 +446,7 @@ const HomePage = () => {
 				)}
 
 				{/* Hypertension */}
-				{joinedGroup.Hypertension && (
+				{joinedGroup?.Hypertension && (
 					<>
 						<div className="max-w-4xl mx-auto grid grid-cols-1 lg:max-w-5xl lg:gap-x-20 lg:grid-cols-2">
 							<div className="relative p-3 col-start-1 row-start-1 flex flex-col-reverse rounded-lg bg-gradient-to-t from-black/75 via-black/0 sm:bg-none sm:row-start-2 sm:p-0 lg:row-start-1">
@@ -548,7 +507,7 @@ const HomePage = () => {
 				)}
 
 				{/* Osteoarthritis */}
-				{joinedGroup.Osteoarthritis && (
+				{joinedGroup?.Osteoarthritis && (
 					<>
 						<div className="max-w-4xl mx-auto grid grid-cols-1 lg:max-w-5xl lg:gap-x-20 lg:grid-cols-2">
 							<div className="relative p-3 col-start-1 row-start-1 flex flex-col-reverse rounded-lg bg-gradient-to-t from-black/75 via-black/0 sm:bg-none sm:row-start-2 sm:p-0 lg:row-start-1">
@@ -617,7 +576,7 @@ const HomePage = () => {
 				)}
 
 				{/* Asthma */}
-				{joinedGroup.Asthma && (
+				{joinedGroup?.Asthma && (
 					<div className="max-w-4xl mx-auto grid grid-cols-1 lg:max-w-5xl lg:gap-x-20 lg:grid-cols-2">
 						<div className="relative p-3 col-start-1 row-start-1 flex flex-col-reverse rounded-lg bg-gradient-to-t from-black/75 via-black/0 sm:bg-none sm:row-start-2 sm:p-0 lg:row-start-1">
 							<h1 className="mt-1 text-xl font-semibold text-white sm:text-slate-900 md:text-2xl">

@@ -1,4 +1,5 @@
-import {createSlice} from "@reduxjs/toolkit";
+import {createSlice, current} from "@reduxjs/toolkit";
+import axios from "axios";
 
 const initialState = {
 	openModal: false,
@@ -13,6 +14,7 @@ const initialState = {
 		Osteoarthritis: false,
 		Asthma: false,
 	},
+	loading: false,
 };
 
 export const homeSlice = createSlice({
@@ -37,6 +39,10 @@ export const homeSlice = createSlice({
 			state.check = newFilter;
 			console.log(state.check);
 		},
+		resetCheck: (state) => {
+			state.check = [];
+			console.log(state.check);
+		},
 		setGroups: (state, action) => {
 			state.groups = {
 				...state.groups,
@@ -51,11 +57,81 @@ export const homeSlice = createSlice({
 			};
 			console.log(state.groups);
 		},
+
+		fetchPending: (state) => {
+			state.loading = true;
+		},
+
+		// error
+
+		fetchReject: (state, action) => {
+			state.error = action.payload;
+			state.loading = false;
+		},
 	},
 });
 
 // Action creators are generated for each case reducer function
-export const {openModal, closeModal, addCheck, removeCheck, setGroups} =
-	homeSlice.actions;
+export const {
+	openModal,
+	closeModal,
+	addCheck,
+	removeCheck,
+	setGroups,
+	fetchPending,
+	fetchReject,
+	resetCheck,
+	getCheck,
+} = homeSlice.actions;
+
+export const fetchGroupsAsync = () => async (dispatch) => {
+	try {
+		const {data} = await axios.get("http://localhost:3000/usergroup", {
+			headers: {
+				Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+			},
+		});
+		console.log(data);
+		const group = [];
+		data?.forEach((el) => {
+			console.log(el.Group.title);
+			group.push(el.Group.title);
+		});
+		dispatch(setGroups(group));
+		// data masuk ke action.payload
+	} catch (error) {
+		dispatch(fetchReject(error.message));
+	}
+};
+
+export const submitGroup = () => async (dispatch, getState) => {
+	try {
+		const {data} = await axios.post(
+			"http://localhost:3000/usergroup",
+			getState().home.check,
+			{
+				headers: {
+					Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+				},
+			}
+		);
+		console.log(data);
+
+		await axios.patch(
+			"http://localhost:3000/user",
+			{},
+			{
+				headers: {
+					Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+				},
+			}
+		);
+
+		localStorage.setItem("firstTime", false);
+		dispatch(resetCheck());
+	} catch (error) {
+		console.log(error);
+	}
+};
 
 export default homeSlice.reducer;
