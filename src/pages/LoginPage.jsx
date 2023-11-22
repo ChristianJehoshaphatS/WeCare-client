@@ -106,7 +106,7 @@ const LoginPage = () => {
 					<p className="mt-10 text-center text-sm text-gray-500">
 						Not a member?{" "}
 						<a
-							href="#"
+							href="/register"
 							className="font-semibold leading-6 text-[#2596be] hover:text-indigo-500"
 						>
 							Start your WeCare Journey

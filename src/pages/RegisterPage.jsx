@@ -100,7 +100,7 @@ const RegisterPage = () => {
 				<p className="mt-10 text-center text-sm text-gray-500">
 					Already a member?{" "}
 					<a
-						href="#"
+						href="/login"
 						className="font-semibold leading-6 text-[#2596be] hover:text-indigo-500"
 					>
 						Sign in
