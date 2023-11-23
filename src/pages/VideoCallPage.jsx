@@ -58,9 +58,9 @@ export default function VideoCallApp() {
 
 	return (
 		<div
-			className="myCallContainer bg-slate-100"
+			className="myCallContainer bg-slate-100 mt-[3.5rem]"
 			ref={myMeeting}
-			style={{width: "100dvw", height: "100dvh"}}
+			style={{width: "100dvw", height: "90dvh"}}
 		></div>
 	);
 }
