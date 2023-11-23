@@ -16,7 +16,7 @@ const LoginPage = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		const {data} = await axios.post(
-			"http://localhost:3000/loginToPostgres",
+			"https://w4zf1p6s-3000.asse.devtunnels.ms/loginToPostgres",
 			loginInput
 		);
 		console.log(data);

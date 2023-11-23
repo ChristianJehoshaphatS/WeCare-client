@@ -18,7 +18,7 @@ const RegisterPage = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		const {data} = await axios.post(
-			"http://localhost:3000/register",
+			"https://w4zf1p6s-3000.asse.devtunnels.ms/register",
 			registerInput
 		);
 		console.log(data);

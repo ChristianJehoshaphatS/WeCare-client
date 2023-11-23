@@ -86,11 +86,14 @@ export const {
 
 export const fetchGroupsAsync = () => async (dispatch) => {
 	try {
-		const {data} = await axios.get("http://localhost:3000/usergroup", {
-			headers: {
-				Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-			},
-		});
+		const {data} = await axios.get(
+			"https://w4zf1p6s-3000.asse.devtunnels.ms/usergroup",
+			{
+				headers: {
+					Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+				},
+			}
+		);
 		console.log(data);
 		const group = [];
 		data?.forEach((el) => {
@@ -107,7 +110,7 @@ export const fetchGroupsAsync = () => async (dispatch) => {
 export const submitGroup = () => async (dispatch, getState) => {
 	try {
 		const {data} = await axios.post(
-			"http://localhost:3000/usergroup",
+			"https://w4zf1p6s-3000.asse.devtunnels.ms/usergroup",
 			getState().home.check,
 			{
 				headers: {
@@ -118,7 +121,7 @@ export const submitGroup = () => async (dispatch, getState) => {
 		console.log(data);
 
 		await axios.patch(
-			"http://localhost:3000/user",
+			"https://w4zf1p6s-3000.asse.devtunnels.ms/user",
 			{},
 			{
 				headers: {
